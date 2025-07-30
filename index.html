@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AJF GESSO</title>
+
+  <!-- Favicon configurado para funcionar -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-ajf.png" />
+  <link rel="shortcut icon" href="favicon-ajf.png" />
+
+  <style>
+    :root {
+      --vermelho-ajf: #c91e1e;
+      --branco: #ffffff;
+      --preto: #111;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--vermelho-ajf);
+      color: var(--branco);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 10px;
+    }
+
+    header h1 {
+      font-size: 48px;
+      margin: 0;
+    }
+
+    header p.numero {
+      font-size: 32px;
+      font-weight: bold;
+      margin: 10px 0 5px;
+    }
+
+    header p.desc {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .btns {
+      margin: 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    button {
+      background: var(--branco);
+      color: var(--vermelho-ajf);
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #fdd;
+    }
+
+    .anuncios {
+      width: 90%;
+      max-width: 600px;
+      margin-top: 20px;
+    }
+
+    .anuncio {
+      background: var(--branco);
+      color: var(--preto);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .anuncio img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .formulario {
+      display: none;
+      flex-direction: column;
+      background: #fff;
+      color: var(--preto);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    .formulario input, .formulario textarea {
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      color: var(--preto);
+      max-width: 90%;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 36px;
+      }
+      header p.numero {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>AJF GESSO</h1>
+    <p class="numero">+55 54 99939-3066</p>
+    <p class="desc">Número de celular da empresa</p>
+  </header>
+
+  <div class="btns" id="btnTipo">
+    <button onclick="definirTipo('celular')">Sou Celular</button>
+    <button onclick="definirTipo('pc')">Sou Computador</button>
+  </div>
+
+  <div class="btns" id="btnAcao" style="display: none;">
+    <a href="https://wa.me/5554999393066" target="_blank">
+      <button>Falar no WhatsApp</button>
+    </a>
+    <button onclick="abrirFormulario()">Criar Anúncio</button>
+  </div>
+
+  <div class="formulario" id="formAnuncio">
+    <input type="text" id="titulo" placeholder="Título do Anúncio" />
+    <input type="text" id="imagem" placeholder="URL da Imagem (opcional)" />
+    <textarea id="descricao" placeholder="Descrição do anúncio"></textarea>
+    <input type="password" id="senha" placeholder="Senha para publicar (obrigatório)" />
+    <button id="btnPublicar">Publicar Anúncio</button>
+    <button onclick="cancelarAnuncio()">Cancelar</button>
+  </div>
+
+  <div class="anuncios" id="anuncios"></div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let anuncios = [];
+
+      window.definirTipo = function(tipo) {
+        document.getElementById("btnTipo").style.display = "none";
+        document.getElementById("btnAcao").style.display = "flex";
+      }
+
+      window.abrirFormulario = function () {
+        document.getElementById("formAnuncio").style.display = "flex";
+      }
+
+      window.cancelarAnuncio = function () {
+        document.getElementById("formAnuncio").style.display = "none";
+      }
+
+      document.getElementById("btnPublicar").addEventListener("click", function () {
+        const titulo = document.getElementById("titulo").value;
+        const imagem = document.getElementById("imagem").value;
+        const descricao = document.getElementById("descricao").value;
+        const senha = document.getElementById("senha").value;
+
+        if (senha !== "AJF123456AJF") {
+          alert("Senha incorreta para publicar o anúncio.");
+          return;
+        }
+
+        if (!titulo || !descricao) {
+          alert("Preencha o título e a descrição.");
+          return;
+        }
+
+        const anuncio = { titulo, imagem, descricao };
+        anuncios.push(anuncio);
+        atualizarAnuncios();
+        cancelarAnuncio();
+      });
+
+      function atualizarAnuncios() {
+        const container = document.getElementById("anuncios");
+        container.innerHTML = "";
+
+        anuncios.forEach((a) => {
+          const el = document.createElement("div");
+          el.className = "anuncio";
+          el.innerHTML = `<h3>${a.titulo}</h3>${a.imagem ? `<img src="${a.imagem}"/>` : ""}<p>${a.descricao.substring(0, 80)}...</p>`;
+          el.onclick = () => abrirModal(a);
+          container.appendChild(el);
+        });
+      }
+
+      window.abrirModal = function (anuncio) {
+        const modal = document.getElementById("modal");
+        const content = document.getElementById("modalContent");
+        content.innerHTML = `
+          <h2>${anuncio.titulo}</h2>
+          ${anuncio.imagem ? `<img src="${anuncio.imagem}" style="max-width:100%;border-radius:8px;"/>` : ""}
+          <p style="margin-top:10px;">${anuncio.descricao}</p>
+          <button onclick="fecharModal()">Fechar</button>
+        `;
+        modal.style.display = "flex";
+      }
+
+      window.fecharModal = function () {
+        document.getElementById("modal").style.display = "none";
+      }
+    });
+  </script>
+
+</body>
+</html>
